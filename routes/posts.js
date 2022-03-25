@@ -1,14 +1,11 @@
 const express = require('express');
 const Post = require('../models/Post');
-
+const auth = require('../authentication/auth')
 const router = express.Router();
 
-router.get('/',(req,res) => {
-    res.send('we are on posts');
-}); 
 
 
-router.post('/',(req,res) => {
+router.post('/',auth.verifyToken,(req,res) => {
     const post = new Post({
         name: req.body.name,
         description: req.body.description,
@@ -25,8 +22,7 @@ router.post('/',(req,res) => {
     })
 })
 
-router.get('/getAll', async (req,res) => {
-
+router.get('/', async (req,res) => {
     Post.find({}, (err, data) => {
 
         if(err) {
@@ -40,11 +36,8 @@ router.get('/getAll', async (req,res) => {
     
         res.status(200).json(data)
       })
-    
-        
-    
 })
-router.delete('/:id', async (req,res) => {
+router.delete('/:id',auth.verifyToken, async (req,res) => {
 
     Post.findOneAndDelete({ _id: req.params.id }, (err, data) => {
         if(err) {
@@ -63,14 +56,10 @@ router.delete('/:id', async (req,res) => {
             message: 'Not found'
           })
         }
-    
         res.status(200).json({id : data._id})
-    
     })
-    
-        
-    
 })
+
 router.get('/:id', async (req,res) => {
 
     Post.findById({ _id: req.params.id }, (err, data) => {
@@ -86,11 +75,9 @@ router.get('/:id', async (req,res) => {
     
         res.status(200).json(data)
       })
-    
-        
-    
 })
-router.patch('/:id', async (req,res) => {
+
+router.patch('/:id',auth.verifyToken, async (req,res) => {
 
     Post.findOneAndUpdate({ _id: req.params.id },{
         name: req.body.name,
@@ -119,8 +106,6 @@ router.patch('/:id', async (req,res) => {
         res.status(200).json(data)
     
       })
-    
-        
-    
 })
+
 module.exports = router;

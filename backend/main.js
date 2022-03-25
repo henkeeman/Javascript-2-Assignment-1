@@ -8,8 +8,10 @@ require('dotenv').config();
 app.use(bodyParser.json());
 // import routes
 const postsRoute = require('../routes/posts')
+const usersRoute = require('../routes/users')
 
-app.use('/products', postsRoute);
+app.use('/api/products', postsRoute);
+app.use('/api/users', usersRoute);
 
 // ROUTES
 app.get('/',(req,res) => {
@@ -17,7 +19,7 @@ app.get('/',(req,res) => {
 }); 
 
 console.log("website on http://localhost:" + process.env.PORT);
-
+// Kopplar servern med mongodb databasen
 mongoose.connect(process.env.MONGO_URI,() => {
         console.log('connected to DB')
 });
